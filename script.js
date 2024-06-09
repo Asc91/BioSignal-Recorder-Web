@@ -172,14 +172,8 @@ let isRecording = false;
 
 function startStreaming() {
   isStreaming = true;
- 
-  document.getElementById("startButton").innerHTML = `
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pause" viewBox="0 0 16 16">
-  <path d="M6 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5m4 0a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5"/>
-</svg>
-`;
-  document.getElementById("recordButton").disabled = false;
- 
+  document.getElementById("recordSaveButton").disabled = false;
+
   // Resume SmoothieCharts streaming
   for (var i = 0; i < smoothieCharts.length; i++) {
     smoothieCharts[i].start();
@@ -189,24 +183,15 @@ function startStreaming() {
 // Function to stop streaming
 function stopStreaming() {
   isStreaming = false;
-  document.getElementById("startButton").innerHTML = `
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
-  <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
-</svg>
-`;
-  document.getElementById("recordButton").disabled = true;
- 
-  // Add code to fix the data graph on the screen
-  fixDataGraph();
-}
-function fixDataGraph() {
-  // Stop SmoothieCharts from streaming new data
+  document.getElementById("recordSaveButton").disabled = true;
+  // Stop SmoothieCharts streaming
   for (var i = 0; i < smoothieCharts.length; i++) {
     smoothieCharts[i].stop();
-  }}
+  }
+}
 
 async function connectToDevice() {
-  // Show loading indicator
+  //   // Show loading indicator
   // document.getElementById("connectButton").textContent = "Connecting...";
   port = await navigator.serial
     .requestPort({})
@@ -222,8 +207,6 @@ async function connectToDevice() {
       <path d="m7.792.312-1.533 2.3A.25.25 0 0 0 6.467 3H7.5v7.319a2.5 2.5 0 0 0-.515-.298L5.909 9.56A1.5 1.5 0 0 1 5 8.18v-.266a1.5 1.5 0 1 0-1 0v.266a2.5 2.5 0 0 0 1.515 2.298l1.076.461a1.5 1.5 0 0 1 .888 1.129 2.001 2.001 0 1 0 1.021-.006v-.902a1.5 1.5 0 0 1 .756-1.303l1.484-.848A2.5 2.5 0 0 0 11.995 7h.755a.25.25 0 0 0 .25-.25v-2.5a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25v2.5c0 .138.112.25.25.25h.741a1.5 1.5 0 0 1-.747 1.142L8.76 8.99a3 3 0 0 0-.26.17V3h1.033a.25.25 0 0 0 .208-.389L8.208.312a.25.25 0 0 0-.416 0"/>
     </svg>
     `;
-      // startButton.textContent = "Start";
-      startButton.disabled = true;
       isStreaming = false;
       throw e;
     });
@@ -231,12 +214,10 @@ async function connectToDevice() {
 
   // Set the color of the connect button to green
   document.getElementById("connectButton").classList.add("connected");
-  // document.getElementById("connectButton").textContent = "Disconnect";
-  startButton.disabled = false;
 
   isConnected = true;
   updateChartLabels();
-
+  startStreaming();
   const reader = port.readable.getReader();
   const decoder = new TextDecoder();
   try {
@@ -269,7 +250,6 @@ async function connectToDevice() {
     <path d="m7.792.312-1.533 2.3A.25.25 0 0 0 6.467 3H7.5v7.319a2.5 2.5 0 0 0-.515-.298L5.909 9.56A1.5 1.5 0 0 1 5 8.18v-.266a1.5 1.5 0 1 0-1 0v.266a2.5 2.5 0 0 0 1.515 2.298l1.076.461a1.5 1.5 0 0 1 .888 1.129 2.001 2.001 0 1 0 1.021-.006v-.902a1.5 1.5 0 0 1 .756-1.303l1.484-.848A2.5 2.5 0 0 0 11.995 7h.755a.25.25 0 0 0 .25-.25v-2.5a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25v2.5c0 .138.112.25.25.25h.741a1.5 1.5 0 0 1-.747 1.142L8.76 8.99a3 3 0 0 0-.26.17V3h1.033a.25.25 0 0 0 .208-.389L8.208.312a.25.25 0 0 0-.416 0"/>
   </svg>
   `;
-    startButton.disabled = true;
     updateChartLabels("No device connected!"); // Reset badge text
   }
 }
@@ -300,57 +280,56 @@ document.getElementById("connectButton").addEventListener("click", async () => {
   </svg>
   `;
     document.getElementById("connectButton").classList.remove("connected");
-    // startButton.textContent = "Start";
-    startButton.disabled = true;
+
     isStreaming = false;
     isRecording = false;
-    recordButton.disabled = true;
-    // recordButton.textContent = "Record";
+    recordSaveButton.disabled = true;
     updateChartLabels("No device connected!"); // Update badge text
   } else {
     await connectToDevice();
   }
 });
 
-document.getElementById("startButton").addEventListener("click", () => {
-  if (!isStreaming) {
-    startStreaming();
-  } else {
-    stopStreaming();
-  }
-});
-fileBreak = false;
-document.getElementById("recordButton").addEventListener("click", () => {
-  if (!isRecording) {
-    isRecording = true;
-    document.getElementById("recordButton").innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-stop-circle" viewBox="0 0 16 16">
-  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-  <path d="M5 6.5A1.5 1.5 0 0 1 6.5 5h3A1.5 1.5 0 0 1 11 6.5v3A1.5 1.5 0 0 1 9.5 11h-3A1.5 1.5 0 0 1 5 9.5z"/>
-</svg>
+document
+  .getElementById("recordSaveButton")
+  .addEventListener("click", async () => {
+    if (!isRecording) {
+      isRecording = true;
+      document.getElementById("recordSaveButton").innerHTML = `
+    <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    fill="currentColor"
+    class="bi bi-download"
+    viewBox="0 0 16 16"
+  >
+    <path
+      d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"
+    />
+    <path
+      d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"
+    />
+  </svg>
   `;
-    document.getElementById("startButton").disabled = true;
-    document.getElementById("saveButton").disabled = true;
-  } else if (isRecording) {
-    isRecording = false;
-    document.getElementById("recordButton").innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-record-circle" viewBox="0 0 16 16">
-  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-  <path d="M11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
-</svg>
+    } else if (isRecording) {
+      isRecording = false;
+      document.getElementById("recordSaveButton").innerHTML = `
+    <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    fill="red"
+    class="bi bi-record"
+    viewBox="0 0 16 16"
+  >
+    <path d="M8 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10z" />
+  </svg>
   `;
-    document.getElementById("startButton").disabled = false;
-    document.getElementById("saveButton").disabled = false;
-  }
-});
- 
-document.getElementById("saveButton").addEventListener("click", async () => {
-  startButton.disabled = true;
-  stopStreaming();
-  await save_csv();
-  startButton.disabled = false;
-});
- 
+      await save_csv();
+    }
+  });
+
 // Download CSV file return db;
 async function save_csv() {
   const fileHandle = await getNewFileHandle();
@@ -373,7 +352,6 @@ async function save_csv() {
   await readableStream.pipeTo(writableStream);
 
   indexedDB.deleteDatabase("adcReadings");
-  saveButton.disabled = true;
 }
 
 var buffer = [];
@@ -437,7 +415,7 @@ async function dbstuff(data) {
   });
 }
 var current_packet = 0;
-var modal = new bootstrap.Modal(document.getElementById("myModal"));
+var modal = new bootstrap.Modal(document.getElementById("saveModal"));
 const queuingStrategy = new CountQueuingStrategy({ highWaterMark: 250 });
 const makeReadableStream = (db, store) => {
   modal.show();
@@ -488,7 +466,7 @@ const makeReadableStream = (db, store) => {
             .getElementById("dynamic")
             .setAttribute("style", "width: 100%");
 
-          document.getElementById("myModalLabel").innerHTML =
+          document.getElementById("saveModalLabel").innerHTML =
             "Saving Complete!";
           setTimeout(() => {
             modal.hide();

@@ -71,30 +71,11 @@
             <li class="nav-item m-1">
               <button
                 type="button"
-                class="btn btn-outline-light"
-                id="startButton"
-                disabled
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  class="bi bi-caret-right-fill"
-                  viewBox="0 0 16 16"
-                >
-                  <path
-                    d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"
-                  />
-                </svg>
-              </button>
-            </li>
-            <li class="nav-item m-1">
-              <button
-                type="button"
                 class="btn btn-outline-light record"
-                id="recordButton"
+                id="recordSaveButton"
                 disabled
+                data-toggle="modal"
+                data-bs-target="#saveModal"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -107,45 +88,19 @@
                   <path d="M8 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10z" />
                 </svg>
               </button>
-            </li>
-            <li class="nav-item m-1">
-              <button
-                type="button"
-                class="btn btn-outline-light"
-                id="saveButton"
-                disabled
-                data-toggle="modal"
-                data-bs-target="#myModal"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  class="bi bi-download"
-                  viewBox="0 0 16 16"
-                >
-                  <path
-                    d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"
-                  />
-                  <path
-                    d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"
-                  />
-                </svg>
-              </button>
 
               <div
                 class="modal fade"
-                id="myModal"
+                id="saveModal"
                 tabindex="-1"
                 role="dialog"
-                aria-labelledby="myModalLabel"
+                aria-labelledby="saveModalLabel"
                 aria-hidden="true"
               >
                 <div class="modal-dialog" role="">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h4 class="modal-title in" id="myModalLabel">
+                      <h4 class="modal-title in" id="saveModalLabel">
                         Saving file, please Wait!
                       </h4>
                     </div>
@@ -184,7 +139,7 @@
             type="button"
             class="btn btn-outline-light m-1"
             data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
+            data-bs-target="#settingModal"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -206,15 +161,15 @@
     <!-- Modal -->
     <div
       class="modal fade"
-      id="exampleModal"
+      id="settingModal"
       tabindex="-1"
-      aria-labelledby="exampleModalLabel"
+      aria-labelledby="settingModalLabel"
       aria-hidden="true"
     >
       <div class="modal-dialog modal-xl">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">
+            <h1 class="modal-title fs-5" id="settingModalLabel">
               BioSignal-Recorder Setting
             </h1>
             <button
